@@ -7,7 +7,7 @@ bool GOAPGoal::IsTargetStateSatisfied(AGOAPAIController& controller)
 
 	bool result = true;
 
-	for (auto& state : TargetState)
+	for (auto& atom : TargetState)
 	{
 		bool isThisStateSatisfied = false;
 
@@ -20,8 +20,7 @@ bool GOAPGoal::IsTargetStateSatisfied(AGOAPAIController& controller)
 		// TODO: Optimisation target
 		for (auto& agentState : (&controller)->GOAPAgentStates)
 		{
-			if (agentState->Key == state->Key
-				&& agentState->Value == state->Value)
+			if (agentState->Atom.Key == atom->Key && agentState->Atom.Value == atom->Value)
 			{
 				isThisStateSatisfied = true;
 				break;

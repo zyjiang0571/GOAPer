@@ -1,6 +1,6 @@
 #pragma once
 #include "GOAPer.h"
-#include "GOAPState.h"
+#include "GOAPAtom.h"
 
 class AGOAPAIController;
 
@@ -8,13 +8,13 @@ UENUM()
 enum class EGOAPGoal : uint8
 {
 	BeNourished		UMETA(DisplayName = "Be Nourished"),
-	MakeFoodAvailable UMETA(DisplaName = "Make Food Available")
+	MakeFoodAvailable UMETA(DisplayName = "Make Food Available")
 };
 
 class GOAPGoal
 {
 public:
-	TArray<TSharedPtr<GOAPState>> TargetState;
+	TArray<TSharedPtr<GOAPAtom>> TargetState;
 
 	bool IsTargetStateSatisfied(AGOAPAIController& controller);
 };

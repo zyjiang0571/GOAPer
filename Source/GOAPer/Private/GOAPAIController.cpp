@@ -12,6 +12,7 @@
 #include "DoActionState.h"
 #include "GOAPStateFactory.h"
 #include "GOAPGoalFactory.h"
+#include "GOAPPlanner.h"
 #include "GOAPActionFactory.h"
 
 
@@ -93,7 +94,7 @@ bool AGOAPAIController::BuildActionPlanForCurrentGoal()
 {
 	TArray<TSharedPtr<GOAPAction>> planActions;
 
-	TSharedPtr<GOAPState> targetState = CurrentGoal->TargetState[0];
+	TSharedPtr<GOAPAtom> targetState = CurrentGoal->TargetState[0];
 
 	// The goal is already satisfied, discard it
 	if (isStateSatisfied(targetState))
@@ -102,32 +103,34 @@ bool AGOAPAIController::BuildActionPlanForCurrentGoal()
 		return false;
 	}
 
+	planActions = GOAPPlanner::Plan(targetState->Key, targetState->Value, GOAPActions, GOAPAgentStates, *this);
+
 	// Search for an action that will satisfy this state
 
-	while (targetState.IsValid())
-	{
-		TSharedPtr<GOAPAction> currentAction = FindActionToSatisfyState(targetState);
+	//while (targetState.IsValid())
+	//{
+	//	TSharedPtr<GOAPAction> currentAction = FindActionToSatisfyState(targetState);
 
-		if (currentAction.IsValid())
-		{
-			planActions.Add(currentAction);
-			targetState = currentAction->PreConditions.Num() == 0 ? nullptr : currentAction->PreConditions[0];
-			if (isStateSatisfied(targetState))
-			{
-				break;
-			}
-		}
-		else
-		{
-			// We didn't find a plan that meets the goal
-			planActions.Empty();
-			break;
-		}
-	}
+	//	if (currentAction.IsValid())
+	//	{
+	//		planActions.Add(currentAction);
+	//		targetState = currentAction->PreConditions.Num() == 0 ? nullptr : currentAction->PreConditions[0];
+	//		if (isStateSatisfied(targetState))
+	//		{
+	//			break;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		// We didn't find a plan that meets the goal
+	//		planActions.Empty();
+	//		break;
+	//	}
+	//}
 
 	if (planActions.Num() > 0)
 	{
-		for (int i = planActions.Num() - 1; i >= 0; --i)
+		for (int i = 0; i < planActions.Num(); ++i)
 		{
 			ActionQueue.Enqueue(planActions[i]);
 		}
@@ -187,11 +190,11 @@ FString AGOAPAIController::GetCurrentActionString()
 
 bool AGOAPAIController::UpdateSingleGOAPAgentState(EGOAPState aGOAPState, bool aValue)
 {
-	for (auto& elem : GOAPAgentStates)
+	for (auto& state : GOAPAgentStates)
 	{
-		if (elem->Key == aGOAPState)
+		if (state->Atom.Key == aGOAPState)
 		{
-			elem->Value = aValue;
+			state->Atom.Value = aValue;
 			return true;
 		}
 	}
@@ -202,7 +205,7 @@ void AGOAPAIController::EvaluateAllGOAPAgentStates()
 {
 	for (auto& elem : GOAPAgentStates)
 	{
-		elem->Value = elem->Evaluate(this);
+		elem->Atom.Value = elem->Evaluate(this);
 	}
 }
 
@@ -222,17 +225,17 @@ bool AGOAPAIController::SelectRandomGoalAndFormPlan()
 	}
 	else
 	{
-		character->DisplayFloatingText(TEXT("Planning Failed"), FSlateColor(FLinearColor::Red));
+		//character->DisplayFloatingText(TEXT("Planning Failed"), FSlateColor(FLinearColor::Red));
 		return false;
 	}
 
 }
 
-bool AGOAPAIController::isStateSatisfied(TSharedPtr<GOAPState> aState)
+bool AGOAPAIController::isStateSatisfied(TSharedPtr<GOAPAtom> aAtom)
 {
-	for (auto agentState : GOAPAgentStates)
+	for (auto& agentState : GOAPAgentStates)
 	{
-		if (agentState->Key == aState->Key && agentState->Value == aState->Value)
+		if (agentState->Atom.Key == aAtom->Key && agentState->Atom.Value == aAtom->Value)
 		{
 			return true;
 		}
@@ -240,13 +243,25 @@ bool AGOAPAIController::isStateSatisfied(TSharedPtr<GOAPState> aState)
 	return false;
 }
 
-TSharedPtr<GOAPAction> AGOAPAIController::FindActionToSatisfyState(TSharedPtr<GOAPState> aState)
+bool AGOAPAIController::isStateSatisfied(const EGOAPState aState, const bool aValue)
 {
-	for (auto action : GOAPActions)
+	for (auto& agentState : GOAPAgentStates)
 	{
-		for (auto effect : action->Effects)
+		if (agentState->Atom.Key == aState && agentState->Atom.Value == aValue)
 		{
-			if (aState->Key == effect->Key && aState->Value == effect->Value)
+			return true;
+		}
+	}
+	return false;
+}
+
+TSharedPtr<GOAPAction> AGOAPAIController::FindActionToSatisfyState(const TSharedPtr<GOAPState> aState)
+{
+	for (auto& action : GOAPActions)
+	{
+		for (auto& effect : action->Effects)
+		{
+			if (aState->Atom.Key == effect->Key && aState->Atom.Value == effect->Value)
 			{
 				return action;
 			}

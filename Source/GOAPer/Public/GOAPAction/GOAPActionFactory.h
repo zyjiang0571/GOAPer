@@ -3,7 +3,7 @@
 #include "GOAPAction.h"
 #include "GatherFoodAction.h"
 #include "EatAction.h"
-#include "CreateFoodAction.h"
+#include "PlantTreeAction.h"
 
 
 class GOAPActionFactory
@@ -22,7 +22,7 @@ TSharedPtr<GOAPAction> GOAPActionFactory::Create(EGOAPAction aAction)
 	case EGOAPAction::Eat:
 		return MakeShareable<GOAPAction>(new EatAction());
 	case EGOAPAction::CreateFood:
-		return MakeShareable<GOAPAction>(new CreateFoodAction());
+		return MakeShareable<GOAPAction>(new PlantTreeAction());
 	default:
 		return nullptr;
 	}

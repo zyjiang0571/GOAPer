@@ -27,6 +27,7 @@ TSharedPtr<GOAPFSMState> DoActionState::Tick(AGOAPAIController& controller, floa
 	// Otherwise, crack on with it
 	else if ((&controller)->CurrentAction->Execute(controller))
 	{
+		
 		// If it's complete, apply the effects
 		(&controller)->CurrentAction->ApplyEffectsToState(controller);
 		// And clear the action

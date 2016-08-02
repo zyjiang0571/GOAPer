@@ -1,6 +1,7 @@
 #pragma once
 #include "GOAPer.h"
-#include "GOAPState.h"
+#include "GOAPAtom.h"
+//#include "GOAPState.h"
 
 class AGOAPAIController;
 
@@ -34,9 +35,9 @@ public:
 	virtual FString GetTextDescription() = 0;
 
 	// Agent State values that must be satisfied to execute the action
-	TArray<TSharedPtr<GOAPState>> PreConditions;
+	TArray<TSharedPtr<GOAPAtom>> PreConditions;
 	// Agent State values that will be applied upon succesful execution
-	TArray<TSharedPtr<GOAPState>> Effects;
+	TArray<TSharedPtr<GOAPAtom>> Effects;
 
 	// Type of actor which is the target of the this action (if any)
 	AActor* ActionTarget = nullptr;

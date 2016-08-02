@@ -54,7 +54,8 @@ public:
 
 	bool SelectRandomGoalAndFormPlan();
 
-	bool isStateSatisfied(TSharedPtr<GOAPState> aState);
+	bool isStateSatisfied(TSharedPtr<GOAPAtom> aState);
+	bool isStateSatisfied(const EGOAPState aState, const bool aValue);
 
-	TSharedPtr<GOAPAction> FindActionToSatisfyState(TSharedPtr<GOAPState> aState);
+	TSharedPtr<GOAPAction> FindActionToSatisfyState(const TSharedPtr<GOAPState> aState);
 };

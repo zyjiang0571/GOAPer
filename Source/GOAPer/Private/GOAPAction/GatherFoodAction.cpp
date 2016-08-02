@@ -10,11 +10,11 @@ GatherFoodAction::GatherFoodAction()
 {
 	InteractionRange = 200.0f;
 
-	// No preconditions, we can always try and gather food
-	PreConditions.Add(MakeShareable<GOAPState>(new IsFoodAvailableState(true)));
+	// Must be food available
+	PreConditions.Add(MakeShareable<GOAPAtom>(new GOAPAtom(EGOAPState::FoodAvailableState, true)));
 
 	// Make us have food!
-	Effects.Add(MakeShareable<GOAPState>(new HasFoodState(true)));
+	Effects.Add(MakeShareable<GOAPAtom>(new GOAPAtom(EGOAPState::HasFood, true)));
 
 }
 

@@ -30,8 +30,8 @@ bool GOAPAction::ArePreconditionsSatisfied(AGOAPAIController& controller)
 		// TODO: Optimisation target
 		for (auto& agentState : (&controller)->GOAPAgentStates)
 		{
-			if (agentState->Key == condition->Key
-					&& agentState->Value == condition->Value)
+			if (agentState->Atom.Key == condition->Key
+					&& agentState->Atom.Value == condition->Value)
 			{
 				isThisConditionSatisfied = true;
 				break;
@@ -50,9 +50,9 @@ void GOAPAction::ApplyEffectsToState(AGOAPAIController& controller)
 	{
 		for (auto& agentState : (&controller)->GOAPAgentStates)
 		{
-			if (agentState->Key == effect->Key)
+			if (agentState->Atom.Key == effect->Key)
 			{
-				agentState->Value = effect->Value;
+				agentState->Atom.Value = effect->Value;
 			}
 		}
 	}
@@ -61,21 +61,15 @@ void GOAPAction::ApplyEffectsToState(AGOAPAIController& controller)
 // Checks if the Agent is within the Interaction Range of the TargetActor
 bool GOAPAction::IsInRange(AGOAPAIController& controller)
 {
-	// If there's no target, we're always in range
-	if (ActionTarget == nullptr)
-	{
-		return true;
-	}
-
 	// Otherwise, check the distance against the interaction range
-	return ((&controller)->character->GetActorLocation() - ActionTarget->GetActorLocation()).Size() < InteractionRange;
+	return ((ActionTarget !=  nullptr) && ((&controller)->character->GetActorLocation() - ActionTarget->GetActorLocation()).Size() < InteractionRange);
 }
 
 bool GOAPAction::AreEffectsSatisfied(AGOAPAIController& controller)
 {
 	bool result = true;
 
-	for (auto& condition : Effects)
+	for (auto& conditionAtom : Effects)
 	{
 		bool isThisEffectSatisfied = false;
 
@@ -88,8 +82,7 @@ bool GOAPAction::AreEffectsSatisfied(AGOAPAIController& controller)
 		// TODO: Optimisation target
 		for (auto& agentState : (&controller)->GOAPAgentStates)
 		{
-			if (agentState->Key == condition->Key
-				&& agentState->Value == condition->Value)
+			if (agentState->Atom.Key == conditionAtom->Key && agentState->Atom.Value == conditionAtom->Value)
 			{
 				isThisEffectSatisfied = true;
 				break;

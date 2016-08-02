@@ -14,7 +14,7 @@ public:
 	virtual FString ToString() override;
 private:
 		float timeWaited;
-		const float TIME_TO_WAIT = 2.0f;
+		const float TIME_TO_WAIT = 0.5f;
 
 };
 

@@ -16,10 +16,10 @@ TSharedPtr<GOAPGoal> GOAPGoalFactory::Create(EGOAPGoal aGoal)
 	switch (aGoal)
 	{
 	case EGOAPGoal::BeNourished:
-		_goal->TargetState.Add(MakeShareable<GOAPState>(new IsHungryState(false)));
+		_goal->TargetState.Add(MakeShareable<GOAPAtom>(new GOAPAtom(EGOAPState::IsHungry, false)));
 		return _goal;
 	case EGOAPGoal::MakeFoodAvailable:
-		_goal->TargetState.Add(MakeShareable<GOAPState>(new IsFoodAvailableState(true)));
+		_goal->TargetState.Add(MakeShareable<GOAPAtom>(new GOAPAtom(EGOAPState::FoodAvailableState,true)));
 		return _goal;
 	default:
 		return nullptr;

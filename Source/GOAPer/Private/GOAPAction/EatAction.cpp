@@ -7,10 +7,9 @@
 EatAction::EatAction()
 {
 	// Must have food
-	PreConditions.Add(MakeShareable<GOAPState>(new HasFoodState(true)));
-
+	PreConditions.Add(MakeShareable<GOAPAtom>(new GOAPAtom(EGOAPState::HasFood, true)));
 	// Makes us not hungry!
-	Effects.Add(MakeShareable<GOAPState>(new IsHungryState(false)));
+	Effects.Add(MakeShareable<GOAPAtom>(new GOAPAtom(EGOAPState::IsHungry, false)));
 }
 
 bool EatAction::Execute(AGOAPAIController& controller)

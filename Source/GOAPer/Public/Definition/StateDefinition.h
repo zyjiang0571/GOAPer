@@ -1,6 +1,6 @@
 #pragma once
 #include "GOAPer.h"
-#include "GOAPState.h"
+#include "GOAPAtom.h"
 #include "StateDefinition.generated.h"
 
 USTRUCT()
